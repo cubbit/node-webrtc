@@ -1,4 +1,5 @@
 cmake_minimum_required(VERSION 3.12)
+project(node-webrtc)
 
 include(ExternalProject)
 find_package(Git REQUIRED)
@@ -13,7 +14,7 @@ ExternalProject_Add(
   project_depot_tools
 
   GIT_REPOSITORY    https://chromium.googlesource.com/chromium/tools/depot_tools.git
-  GIT_TAG           2fddb95698211db1373ebe2b16091a54eac51c9c
+  GIT_TAG           650096367cd9900e499052c49179b33b68fa1ac9
 
   PREFIX            ${CMAKE_BINARY_DIR}/external/depot_tools/prefix
   TMP_DIR           ${CMAKE_BINARY_DIR}/external/depot_tools/tmp
@@ -42,6 +43,8 @@ add_dependencies(libc++ libwebrtc)
 set(libc++_objects
   algorithm.o
   any.o
+  atomic.o
+  barrier.o
   bind.o
   charconv.o
   chrono.o
@@ -52,6 +55,7 @@ set(libc++_objects
   functional.o
   future.o
   hash.o
+  ios.instantiations.o
   ios.o
   iostream.o
   locale.o
@@ -61,6 +65,7 @@ set(libc++_objects
   new.o
   optional.o
   random.o
+  random_shuffle.o
   regex.o
   shared_mutex.o
   stdexcept.o
@@ -101,7 +106,7 @@ set(libc++abi_objects
   cxa_guard.o
   cxa_handlers.o
   cxa_personality.o
-  cxa_unexpected.o
+  # cxa_unexpected.o
   cxa_vector.o
   cxa_virtual.o
   fallback_malloc.o
@@ -124,7 +129,7 @@ set_target_properties(libc++abi PROPERTIES IMPORTED_OBJECTS_DEBUG "${libc++abi_o
 # libwebrtc
 # -----------------------------------------------------------------------------
 
-set(WEBRTC_REVISION branch-heads/4280)
+set(WEBRTC_REVISION branch-heads/4500)
 
 list(APPEND GN_GEN_ARGS
   rtc_build_examples=false
@@ -143,14 +148,15 @@ if ("$ENV{TARGET_ARCH}" STREQUAL "arm")
     fatal_linker_warnings=false
   )
 elseif ("$ENV{TARGET_ARCH}" STREQUAL "arm64")
-  list(APPEND GN_GEN_ARGS
-    target_os="linux"
-    target_cpu="arm64"
-    rtc_build_tools=true
-    treat_warnings_as_errors=false
-    fatal_linker_warnings=false
-  )
-else()
+  if(NOT APPLE)
+    list(APPEND GN_GEN_ARGS
+      target_os="linux"
+      target_cpu="arm64"
+      rtc_build_tools=true
+      treat_warnings_as_errors=false
+      fatal_linker_warnings=false
+    )
+  endif()
   list(APPEND GN_GEN_ARGS
     rtc_build_tools=false
   )
@@ -190,6 +196,11 @@ else()
     ${libwebrtc_binary_dir}/obj/libwebrtc.a
     ${libwebrtc_binary_dir}/obj/pc/libpeerconnection.a
   )
+
+  if (NOT APPLE)
+    list(APPEND byproducts ${libc++abi_objects})
+  endif()
+
 endif()
 
 ExternalProject_Add(
@@ -386,19 +397,34 @@ else()
     libc++abi
   )
 
+  if(NOT APPLE)
+    target_link_libraries(${MODULE} PRIVATE
+      libc++abi
+    )
+  endif()
+
   target_compile_options(${MODULE} PRIVATE
     -fno-rtti
     -fvisibility=hidden
     -nostdinc++
     -nodefaultlibs
     -Wall
+    -Wno-missing-prototypes
     -Wextra
     -Wno-missing-field-initializers
     -Wno-uninitialized
+    -Wno-suggest-override
     -Wno-unused-local-typedefs
     -Wno-unused-variable
     -Wpedantic
+    $<$<COMPILE_LANGUAGE:C>:-Wno-missing-prototypes>
   )
+
+  if(APPLE)  # actually should be if(clang), but there is no such flag
+    target_compile_options(${MODULE} PRIVATE
+      -Wno-missing-prototypes
+    )
+  endif()
 
   target_compile_definitions(${MODULE} PRIVATE
     -D_LIBCPP_ABI_UNSTABLE
@@ -420,6 +446,15 @@ else()
       "-framework AppKit"
       "-framework AVFoundation"
     )
+
+    if ("$ENV{TARGET_ARCH}" STREQUAL "arm64")
+      target_compile_options(${MODULE} PRIVATE
+        -arch arm64
+      )
+      target_link_options(${MODULE} PRIVATE
+        -arch arm64
+      )
+    endif()
 
     target_compile_options(${MODULE} PRIVATE
       -Weverything

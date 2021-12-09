@@ -23,6 +23,10 @@ CONVERTER_IMPL(ENUM(), std::string, value) {
   }
 }
 
+// #if defined(__GNUC__) || defined(__clang__)
+// __builtin_unreachable();
+// #endif
+
 CONVERT_VIA(Napi::Value, std::string, ENUM())
 
 #undef ENUM_SUPPORTED

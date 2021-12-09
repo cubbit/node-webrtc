@@ -1,6 +1,7 @@
 *\~
 *.swp
 .idea
+.vscode
 .DS_Store
 build
 example
