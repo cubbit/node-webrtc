@@ -28,7 +28,7 @@ The following platforms are confirmed to work with node-webrtc and have prebuilt
     <tr>
       <td colspan="2" rowspan="2"></td>
       <th colspan="3">Linux</th>
-      <th>macOS</th>
+      <th colspan="2">macOS</th>
       <th>Windows</th>
     </tr>
     <tr>
@@ -36,13 +36,15 @@ The following platforms are confirmed to work with node-webrtc and have prebuilt
       <th>arm64</th>
       <th>x64</th>
       <th>x64</th>
+      <th>arm64</th>
       <th>x64</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <th rowspan="6">Node</th>
+      <th rowspan="7">Node</th>
       <th>8</th>
+        <td align="center">✓</td>
         <td align="center">✓</td>
         <td align="center">✓</td>
         <td align="center">✓</td>
@@ -54,11 +56,13 @@ The following platforms are confirmed to work with node-webrtc and have prebuilt
         <td align="center">✓</td>
         <td align="center">✓</td>
         <td align="center">✓</td>
+        <td align="center">✓</td>
       <td align="center">✓</td>
       <td align="center">✓</td>
     </tr>
     <tr>
       <th>11</th>
+        <td align="center">✓</td>
         <td align="center">✓</td>
         <td align="center">✓</td>
         <td align="center">✓</td>
@@ -70,6 +74,7 @@ The following platforms are confirmed to work with node-webrtc and have prebuilt
         <td align="center">✓</td>
         <td align="center">✓</td>
         <td align="center">✓</td>
+        <td align="center">✓</td>
       <td align="center">✓</td>
       <td align="center">✓</td>
     </tr>
@@ -78,11 +83,22 @@ The following platforms are confirmed to work with node-webrtc and have prebuilt
         <td align="center">✓</td>
         <td align="center">✓</td>
         <td align="center">✓</td>
+        <td align="center">✓</td>
       <td align="center">✓</td>
       <td align="center">✓</td>
     </tr>
     <tr>
       <th>14</th>
+        <td align="center">✓</td>
+        <td align="center">✓</td>
+        <td align="center">✓</td>
+        <td align="center">✓</td>
+      <td align="center">✓</td>
+      <td align="center">✓</td>
+    </tr>
+    <tr>
+      <th>16</th>
+        <td align="center">✓</td>
         <td align="center">✓</td>
         <td align="center">✓</td>
         <td align="center">✓</td>
