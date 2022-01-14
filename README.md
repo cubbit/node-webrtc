@@ -111,15 +111,17 @@ The following platforms are confirmed to work with node-webrtc and have prebuilt
         <td align="center"></td>
         <td align="center"></td>
         <td align="center">✓</td>
-      <td align="center">✓</td>
-      <td align="center">✓</td>
+        <td align="center">✓</td>
+        <td align="center">✓</td>
+        <td align="center">✓</td>
     </tr>
     <tr>
       <th>5</th>
         <td align="center"></td>
         <td align="center"></td>
         <td align="center">✓</td>
-      <td align="center">✓</td>
+        <td align="center">✓</td>
+        <td align="center">✓</td>
       <td align="center">✓</td>
     </tr>
   </tbody>
