@@ -38,31 +38,31 @@ async function main(exit) {
     args.push('--target_arch=' + process.env.TARGET_ARCH);
   }
 
-  if (os.platform() === 'darwin' && os.arch() === 'arm64') {
-    const url = 'https://cubbit.s3.eu-central-1.amazonaws.com/node-webrtc/0.4.7-dev/darwin/arm64/wrtc.node';
+  // if (os.platform() === 'darwin' && os.arch() === 'arm64') {
+  //   const url = 'https://cubbit.s3.eu-central-1.amazonaws.com/node-webrtc/0.4.7-dev/darwin/arm64/wrtc.node';
 
-    console.log('Apple Silicon CPU detected. Downloading prebuilt for darwin-arm64 from', url);
-    if (!fs.existsSync(bindingsPath)) {
-      fs.mkdirSync(path.dirname(bindingsPath), { recursive: true });
+  //   console.log('Apple Silicon CPU detected. Downloading prebuilt for darwin-arm64 from', url);
+  //   if (!fs.existsSync(bindingsPath)) {
+  //     fs.mkdirSync(path.dirname(bindingsPath), { recursive: true });
+  //   }
+
+  //   await download(url, bindingsPath);
+  //   console.log('Downloaded prebuilt for darwin-arm64 at', bindingsPath);
+  // }
+  // else {
+  let { status } = spawnSync('node-pre-gyp', args, {
+    shell: true,
+    stdio: 'inherit'
+  });
+
+  if (status) {
+    if (!exit) {
+      throw new Error(status);
     }
 
-    await download(url, bindingsPath);
-    console.log('Downloaded prebuilt for darwin-arm64 at', bindingsPath);
+    process.exit(1);
   }
-  else {
-    let { status } = spawnSync('node-pre-gyp', args, {
-      shell: true,
-      stdio: 'inherit'
-    });
-
-    if (status) {
-      if (!exit) {
-        throw new Error(status);
-      }
-
-      process.exit(1);
-    }
-  }
+  // }
 }
 
 module.exports = main;
